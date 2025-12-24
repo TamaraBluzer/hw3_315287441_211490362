@@ -156,7 +156,7 @@ int main(int argc, char *argv[]) {
               // Find Target
               for (int j = 0; j < num_clients; j++) {
                 if (strcmp(clients[j].name, target_name) == 0) {
-                  char out[MAX_BUFFER + 50];
+                  char out[MAX_NAME_LEN + 2 + MAX_BUFFER + 1];
                   snprintf(out, sizeof(out), "%s: %s", clients[i].name,
                            msg_content);
                   write(clients[j].fd, out, strlen(out));
@@ -166,7 +166,7 @@ int main(int argc, char *argv[]) {
             }
           } else {
             // Normal Broadcast
-            char out[MAX_BUFFER + 50];
+            char out[MAX_NAME_LEN + 2 + MAX_BUFFER + 1];
             snprintf(out, sizeof(out), "%s: %s", clients[i].name, buffer);
             for (int j = 0; j < num_clients; j++) {
               if (i != j) { // Don't echo to self
