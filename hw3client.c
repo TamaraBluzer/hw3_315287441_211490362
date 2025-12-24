@@ -92,16 +92,23 @@ int main(int argc, char *argv[]) {
     }
 
     // Handle Server Message
-    if (FD_ISSET(sock_fd, &read_fds)) { // if server socket is ready
+    if (FD_ISSET(sock_fd, &read_fds)) {
       char buffer[MAX_BUFFER];
-      ssize_t bytes_read =
-          read(sock_fd, buffer, sizeof(buffer) - 1); // read from server
-      if (bytes_read <= 0) {                         // if server disconnected
+      ssize_t bytes_read = read(sock_fd, buffer, sizeof(buffer));
+      if (bytes_read <= 0) {
         printf("Server disconnected.\n");
         break;
       }
-      buffer[bytes_read] = '\0';
-      printf("%s\n", buffer);
+      ssize_t off = 0;
+      while (off < bytes_read) {
+        ssize_t w =
+            write(STDOUT_FILENO, buffer + off, (size_t)(bytes_read - off));
+        if (w < 0) {
+          perror("write stdout");
+          break;
+        }
+        off += w;
+      }
     }
 
     // Handle User Input
