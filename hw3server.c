@@ -9,7 +9,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#define MAX_CLIENTS 100
+#define MAX_CLIENTS 16
 
 typedef struct {
   int fd;
