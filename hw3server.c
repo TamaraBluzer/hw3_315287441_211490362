@@ -1,6 +1,7 @@
 #include "chat.h"
 #include <arpa/inet.h>
 #include <netinet/in.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -25,11 +26,11 @@ int main(int argc, char *argv[]) {
     exit(1);
   }
 
+  // Prevent server crash when writing to a disconnected client
+  signal(SIGPIPE, SIG_IGN);
+
   int port = atoi(argv[1]);
 
-  /* TODO: Tamara's Task */
-
-  /* 1. Implement socket(), bind(), and listen() */
   int server_fd;
   struct sockaddr_in server_addr;
 
@@ -133,9 +134,8 @@ int main(int argc, char *argv[]) {
 
         if (bytes_read <= 0) {
           // Client disconnected or error
-          // We need to implement remove_client() properly, but for now let's
-          // just close and move the last one here
           printf("client %s disconnected\n", clients[i].name);
+          fflush(stdout); // Ensure output is seen
           close(clients[i].fd);
           clients[i] = clients[num_clients - 1]; // Move last to current
           num_clients--;
